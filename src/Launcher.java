@@ -1,65 +1,32 @@
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.stream.Collectors;
-
+import java.util.*;
 public class Launcher {
+
     public static void main(String[] args) {
-        System.out.println("Bienvenue!");
-        Scanner scanner = new Scanner(System.in);
-        String input = "";
+        System.out.println("Bienvenue dans mon Launcher, étranger.  Commande : quit, fibo, freq, predict.");
 
-        while (!input.equals("quit")) {
-            System.out.print("Entrez une commande : ");
-            input = scanner.nextLine();
+        List<Command> commands = new ArrayList<>();
+        commands.add(new Quit());
+        commands.add(new Fibo());
+        commands.add(new Freq());
+        commands.add(new Predict());
 
-            if (input.equals("quit")) {
-                System.out.println("Au revoir !");
-            } else if (input.equals("fibo")) {
-                System.out.print("Entrez un nombre : ");
-                int n = scanner.nextInt();
-                scanner.nextLine();
-                int fibo = fibonacci(n);
-                System.out.println("La valeur de la suite de Fibonacci de " + n + " est : " + fibo);
-            } else if (input.equals("freq")) {
-                System.out.print("Entrez le chemin du fichier : ");
-                String pathString = scanner.nextLine();
-                Path path = Paths.get(pathString);
+        Scanner scan = new Scanner(System.in);
 
-                try {
-                    String content = Files.readString(path);
-                    String[] words = content.replaceAll("[^a-zA-Z ]", " ").toLowerCase().split("\\s+");
-
-                    Map<String, Long> wordFrequencies = Arrays.stream(words)
-                            .filter(w -> !w.isBlank())
-                            .collect(Collectors.groupingBy(w -> w, Collectors.counting()));
-
-                    String mostFrequentWords = wordFrequencies.entrySet().stream()
-                            .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-                            .limit(3)
-                            .map(Map.Entry::getKey)
-                            .collect(Collectors.joining(" "));
-
-                    System.out.println("Les mots les plus fréquents sont : " + mostFrequentWords);
-
-                } catch (IOException e) {
-                    System.out.println("Unreadable file: " + e.getClass().getSimpleName() + " - " + e.getMessage());
+        boolean running = true;
+        while (running) {
+            String input = scan.nextLine();
+            boolean known = false;
+            for(Command command: commands) {
+                if (command.name().equals(input)) {
+                    known = true;
+                    running = !command.run(scan);
+                    break;
                 }
-            } else {
+            }
+            if (!known) {
                 System.out.println("Unknown command");
             }
         }
-    }
-
-    public static int fibonacci(int n) {
-        if (n == 0 || n == 1) {
-            return n;
-        }
-        return fibonacci(n - 1) + fibonacci(n - 2);
+        scan.close();
     }
 }
