@@ -51,7 +51,7 @@ public class Launcher {
                     System.out.println("Unreadable file: " + e.getClass().getSimpleName() + " - " + e.getMessage());
                 }
             } else {
-                System.out.println("Commande inconnue");
+                System.out.println("Unknown command");
             }
         }
     }
