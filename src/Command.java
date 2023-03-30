@@ -1,3 +1,4 @@
+// Imports
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
@@ -13,6 +14,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+// COmmand
 interface Command {
     String name();
     boolean run(Scanner scanner);
